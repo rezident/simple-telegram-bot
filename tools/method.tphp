@@ -1,0 +1,27 @@
+
+
+namespace TelegramBot\methods;
+
+use TelegramBot\TelegramBot;
+use TelegramBot\types\<?=$resultClass?>;
+
+/**
+ * <?=$description?>
+
+ *
+ * @method <?=$resultClass?> run(TelegramBot $bot)
+ *
+<?php foreach($fields as $fieldName => $field) { ?>
+ * @method $this set<?=$fieldName?>(<?=$field['type']?> $<?=lcfirst($fieldName)?>) <?=$field['description']?>
+
+<?php } ?>
+ *
+ * @url <?=$url?>#<?=$anchor?>
+
+ *
+ * @author Yuri Nazarenko / rezident <m@rezident.org>
+ */
+class <?=$name?> extends AbstractMethod
+{
+    protected $resultClass = <?=$resultClass?>::class;
+}

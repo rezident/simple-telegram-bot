@@ -1,0 +1,20 @@
+{
+    "name": "rezident/telegram-bot",
+    "type": "framework",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yuri Nazarenko",
+            "email": "m@rezident.org"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "TelegramBot\\": "src/"
+        }
+    },
+    "require": {
+        "ext-curl": "*",
+        "ext-json": "*"
+    }
+}

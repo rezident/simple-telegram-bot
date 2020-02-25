@@ -1,0 +1,22 @@
+
+
+namespace TelegramBot\types;
+
+/**
+ * <?=$description?>
+
+ *
+<?php foreach($fields as $fieldName => $field) { ?>
+ * @method <?=$field['type']?> get<?=$fieldName?> <?=$field['description']?>
+
+<?php } ?>
+ *
+ * @url <?=$url?>#<?=$anchor?>
+
+ *
+ * @author Yuri Nazarenko / rezident <m@rezident.org>
+ */
+class <?=$name?> extends AbstractType
+{
+
+}
