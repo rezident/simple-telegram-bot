@@ -9,12 +9,14 @@ use TelegramBot\types\<?=$resultClass?>;
  * <?=$description?>
 
  *
- * @method <?=$resultClass?> run(TelegramBot $bot)
- *
 <?php foreach($fields as $fieldName => $field) { ?>
  * @method $this set<?=$fieldName?>(<?=$field['type']?> $<?=lcfirst($fieldName)?>) <?=$field['description']?>
 
 <?php } ?>
+<?php if (count($fields)) { ?>
+ *
+<?php } ?>
+ * @method <?=$resultClass?> run(TelegramBot $bot)
  *
  * @url <?=$url?>#<?=$anchor?>
 

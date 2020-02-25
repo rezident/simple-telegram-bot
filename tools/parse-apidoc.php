@@ -18,30 +18,39 @@ $name = ucfirst($name);
 
 $beginPos = strpos($html, '<p>', $endPos);
 $endPos = strpos($html, '<table', $beginPos);
+$endPos1 = strpos($html, '<h4>', $beginPos);
+$endPos = $endPos < $endPos1 ? $endPos : $endPos1;
+
 $description = html_entity_decode(trim(strip_tags(getSubstring($html, $beginPos, $endPos))), ENT_QUOTES, 'UTF-8');
 
-$beginPos = strpos($html, '<tbody>', $endPos) + 7;
-$endPos = strpos($html, '</tbody>', $beginPos);
-$tableContent = getSubstring($html, $beginPos, $endPos);
-
-$contentOfRows = explode('</tr>', $tableContent);
 $fields = [];
-foreach ($contentOfRows as $contentOfLine) {
-    if (!trim($contentOfLine)) {
-        continue;
-    }
-    $contentOfColumns = explode('</td>', $contentOfLine);
-    $contentOfColumns = array_map('strip_tags', $contentOfColumns);
-    $contentOfColumns = array_map('trim', $contentOfColumns);
-    $contentOfColumns = array_filter($contentOfColumns);
-    $contentOfColumns = array_map(function ($column) {
-        return html_entity_decode($column, ENT_QUOTES, 'UTF-8');
-    }, $contentOfColumns);
+$beginPos = strpos($html, '<tbody>', $endPos) + 7;
+$beginPos1 = strpos($html, '<h4>', $endPos) + 4;
+if ($beginPos < $beginPos1) {
+    $endPos = strpos($html, '</tbody>', $beginPos);
+    $tableContent = getSubstring($html, $beginPos, $endPos);
 
-    $fields[getFieldName(array_shift($contentOfColumns))] = [
-        'type'        => getTypeString(array_shift($contentOfColumns)),
-        'description' => getDescription($contentOfColumns)
-    ];
+    $contentOfRows = explode('</tr>', $tableContent);
+    foreach ($contentOfRows as $contentOfLine) {
+        if (!trim($contentOfLine)) {
+            continue;
+        }
+        $contentOfColumns = explode('</td>', $contentOfLine);
+        $contentOfColumns = array_map('strip_tags', $contentOfColumns);
+        $contentOfColumns = array_map('trim', $contentOfColumns);
+        $contentOfColumns = array_filter($contentOfColumns);
+        $contentOfColumns = array_map(
+            function ($column) {
+                return html_entity_decode($column, ENT_QUOTES, 'UTF-8');
+            },
+            $contentOfColumns
+        );
+
+        $fields[getFieldName(array_shift($contentOfColumns))] = [
+            'type'        => getTypeString(array_shift($contentOfColumns)),
+            'description' => getDescription($contentOfColumns)
+        ];
+    }
 }
 
 ob_start();
