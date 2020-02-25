@@ -3,6 +3,7 @@
 namespace TelegramBot;
 
 use TelegramBot\exceptions\MethodNotFountException;
+use TelegramBot\helpers\StringHelper;
 
 abstract class ConfigurableComponent
 {
@@ -15,7 +16,7 @@ abstract class ConfigurableComponent
 
     public function __call($name, $arguments)
     {
-        $methodParts = explode('_', $this->getSnakeString($name));
+        $methodParts = explode('_', StringHelper::toSnake($name));
         $method = array_shift($methodParts);
         $key = implode('_', $methodParts);
         $value = $arguments[0];
@@ -65,14 +66,4 @@ abstract class ConfigurableComponent
         return $this;
     }
 
-    private function getSnakeString(string $string)
-    {
-        return preg_replace_callback(
-            '/([A-Z])/',
-            function ($symbol) {
-                return '_' . strtolower($symbol[1]);
-            },
-            $string
-        );
-    }
 }

@@ -22,6 +22,7 @@ $endPos1 = strpos($html, '<h4>', $beginPos);
 $endPos = $endPos < $endPos1 ? $endPos : $endPos1;
 
 $description = html_entity_decode(trim(strip_tags(getSubstring($html, $beginPos, $endPos))), ENT_QUOTES, 'UTF-8');
+$description = fixSentencesSpaces($description);
 
 $fields = [];
 $beginPos = strpos($html, '<tbody>', $endPos) + 7;
@@ -77,6 +78,7 @@ function getTypeString(string $string): string
     $replaceData = [
         'Integer'      => 'int',
         'Boolean'      => 'bool',
+        'True'         => 'bool',
         'String'       => 'string',
         'Float number' => 'float'
     ];
@@ -90,8 +92,8 @@ function getTypeString(string $string): string
     foreach ($fieldTypes as &$fieldType) {
         if (isset($replaceData[$fieldType])) {
             $fieldType = $replaceData[$fieldType];
-            $fieldType .= str_repeat('[]', $arrays);
         }
+        $fieldType .= str_repeat('[]', $arrays);
     }
 
     return implode('|', $fieldTypes);
@@ -103,5 +105,12 @@ function getDescription(array $descParts)
         $descParts[0] = 'Required';
     }
 
-    return implode('. ', $descParts);
+    $result = fixSentencesSpaces(implode('. ', $descParts));
+
+    return $result;
+}
+
+function fixSentencesSpaces(string $string): string
+{
+    return preg_replace('/\.([A-Z].)/', '. $1', $string);
 }

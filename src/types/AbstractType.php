@@ -2,20 +2,25 @@
 
 namespace TelegramBot\types;
 
+use ReflectionClass;
 use TelegramBot\ConfigurableComponent;
+use TelegramBot\helpers\StringHelper;
 
 class AbstractType extends ConfigurableComponent
 {
-    protected $nestedCustomFields = [];
-
     public function __construct(array $config = [])
     {
-        foreach ($this->nestedCustomFields as $fieldName => $resultClass) {
-            if (isset($config[$fieldName])) {
-                $config[$fieldName] = call_user_func([$resultClass, 'create'], $config[$fieldName]);
+        $docComment = (new ReflectionClass($this))->getDocComment();
+        preg_match_all('/@method\s(\w+)\s(\w+)/', $docComment, $matches);
+        foreach ($matches[1] as $index => $type) {
+            if ($type[0] >= 'A' && $type[0] <= 'Z') {
+                $field = StringHelper::toSnake(substr($matches[2][$index], 3));
+                $className = '\\TelegramBot\\types\\' . $type;
+                $config[$field] = call_user_func([$className, 'create'], $config[$field]);
             }
         }
 
         parent::__construct($config);
     }
+
 }
