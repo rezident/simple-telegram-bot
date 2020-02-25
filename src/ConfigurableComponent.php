@@ -43,7 +43,12 @@ abstract class ConfigurableComponent
 
     protected function toArray(): array
     {
-        return $this->fields;
+        $result = [];
+        foreach ($this->fields as $key => $value) {
+            $result[$key] = $value instanceof ConfigurableComponent ? $value->toArray() : $value;
+        }
+
+        return $result;
     }
 
     /** @noinspection PhpUnusedPrivateMethodInspection */
@@ -62,8 +67,12 @@ abstract class ConfigurableComponent
 
     private function getSnakeString(string $string)
     {
-        return preg_replace_callback('/([A-Z])/', function ($symbol) {
-            return '_' . strtolower($symbol[1]);
-        }, $string);
+        return preg_replace_callback(
+            '/([A-Z])/',
+            function ($symbol) {
+                return '_' . strtolower($symbol[1]);
+            },
+            $string
+        );
     }
 }
