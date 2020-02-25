@@ -1,8 +1,8 @@
-#PHP Simple Telegram Bot
+# PHP Simple Telegram Bot
 
 This is a simple telegram bot framework.
 
-##Usage
+## Usage
 ```php
 $bot = \TelegramBot\TelegramBot::create()
     ->setToken('<put your token here');
