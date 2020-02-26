@@ -80,7 +80,8 @@ function getTypeString(string $string): string
         'Boolean'      => 'bool',
         'True'         => 'bool',
         'String'       => 'string',
-        'Float number' => 'float'
+        'Float number' => 'float',
+        'Float'        => 'float',
     ];
     $arrays = 0;
     while (strpos($string, 'Array of ') === 0) {
