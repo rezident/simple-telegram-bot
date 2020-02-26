@@ -8,7 +8,7 @@ $resultClass = $argv[2] ?? null;
 
 $html = file_get_contents($url);
 
-$beginPos = strpos($html, '<a class="anchor" name="' . $anchor);
+$beginPos = strpos($html, '<a class="anchor" name="' . $anchor . '"');
 $beginPos = strpos($html, '</a>', $beginPos) + 4;
 $endPos = strpos($html, '</h4>', $beginPos);
 
