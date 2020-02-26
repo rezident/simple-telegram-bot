@@ -19,7 +19,7 @@ abstract class ConfigurableComponent
         $methodParts = explode('_', StringHelper::toSnake($name));
         $method = array_shift($methodParts);
         $key = implode('_', $methodParts);
-        $value = $arguments[0];
+        $value = $arguments[0] ?? null;
         if (method_exists($this, $method) === false) {
             throw new MethodNotFountException($method);
         }
