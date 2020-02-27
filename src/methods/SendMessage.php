@@ -3,6 +3,7 @@
 namespace TelegramBot\methods;
 
 use TelegramBot\TelegramBot;
+use TelegramBot\types\ForceReply;
 use TelegramBot\types\InlineKeyboardMarkup;
 use TelegramBot\types\Message;
 use TelegramBot\types\ReplyKeyboardMarkup;

@@ -9,7 +9,7 @@ use TelegramBot\TelegramBot;
 
 abstract class AbstractMethod extends ConfigurableComponent
 {
-    private const URL_PREFIX = 'https://api.telegram.org/bot';
+    const URL_PREFIX = 'https://api.telegram.org/bot';
 
     protected $resultClass;
 
