@@ -22,4 +22,16 @@ class InlineKeyboardMarkup extends AbstractType
         return parent::getInlineKeyboard();
     }
 
+    /**
+     * Array of button rows, each represented by an Array of InlineKeyboardButton objects
+     *
+     * @param InlineKeyboardButton[][] $inlineKeyboard
+     *
+     * @return $this
+     */
+    function setInlineKeyboard($inlineKeyboard)
+    {
+        return parent::setInlineKeyboard($inlineKeyboard);
+    }
+
 }
