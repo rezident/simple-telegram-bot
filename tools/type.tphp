@@ -11,6 +11,13 @@ namespace TelegramBot\types;
 
 <?php } ?>
  *
+<?php if ($typeIsParameter) { ?>
+<?php foreach($fields as $fieldName => $field) { ?>
+ * @method $this set<?=$fieldName?>(<?=$field['type']?> $<?=lcfirst($fieldName)?>) <?=$field['description']?>
+
+<?php } ?>
+ *
+<?php } ?>
  * @url <?=$url?>#<?=$anchor?>
 
  *
