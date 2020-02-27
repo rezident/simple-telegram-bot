@@ -3,10 +3,10 @@
 
 $url = $argv[1] or die('URL is not specified' . PHP_EOL);
 $resultClass = $argv[2] ?? null;
-$typeIsParameter = !!$argv[2] ?? false;
+$typeIsParameter = !!@$argv[2];
 
 var_dump($typeIsParameter);
-[$url, $anchor] = explode('#', $url);
+list($url, $anchor) = explode('#', $url);
 
 $html = file_get_contents($url);
 
@@ -116,4 +116,9 @@ function getDescription(array $descParts)
 function fixSentencesSpaces(string $string): string
 {
     return preg_replace('/\.([A-Z].)/', '. $1', $string);
+}
+
+function isArray(string $type): bool
+{
+    return substr($type, -4) === '[][]';
 }

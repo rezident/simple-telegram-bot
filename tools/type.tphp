@@ -7,12 +7,14 @@ namespace TelegramBot\types;
 
  *
 <?php foreach($fields as $fieldName => $field) { ?>
+<?php if (isArray($field['type'])) continue; ?>
  * @method <?=$field['type']?> get<?=$fieldName?> <?=$field['description']?>
 
 <?php } ?>
  *
 <?php if ($typeIsParameter) { ?>
 <?php foreach($fields as $fieldName => $field) { ?>
+<?php if (isArray($field['type'])) continue; ?>
  * @method $this set<?=$fieldName?>(<?=$field['type']?> $<?=lcfirst($fieldName)?>) <?=$field['description']?>
 
 <?php } ?>
@@ -26,4 +28,35 @@ namespace TelegramBot\types;
 class <?=$name?> extends AbstractType
 {
 
+<?php foreach($fields as $fieldName => $field) { ?>
+<?php if (!isArray($field['type'])) continue; ?>
+    /**
+     * <?=$field['description']?>
+
+     *
+     * @return <?=$field['type']?>
+
+     */
+    function get<?=$fieldName?>()
+    {
+        return parent::get<?=$fieldName?>();
+    }
+
+<?php if ($typeIsParameter) { ?>
+    /**
+     * <?=$field['description']?>
+
+     *
+     * @param <?=$field['type']?> $<?=lcfirst($fieldName)?>
+
+     *
+     * @return $this
+     */
+    function set<?=$fieldName?>($<?=lcfirst($fieldName)?>)
+    {
+        return parent::set<?=$fieldName?>($<?=lcfirst($fieldName)?>);
+    }
+
+<?php } ?>
+<?php } ?>
 }
