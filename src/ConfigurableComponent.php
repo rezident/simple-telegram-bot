@@ -42,11 +42,11 @@ abstract class ConfigurableComponent
         return new static($config);
     }
 
-    protected function toArray(): array
+    protected function toQuery()
     {
         $result = [];
         foreach ($this->fields as $key => $value) {
-            $result[$key] = $value instanceof ConfigurableComponent ? $value->toArray() : $value;
+            $result[$key] = $value instanceof ConfigurableComponent ? $value->toQuery() : $value;
         }
 
         return $result;
