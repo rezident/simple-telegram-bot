@@ -4,13 +4,13 @@
 namespace TelegramBot\types;
 
 /**
- * Boolean value
+ * String value
  *
- * @method bool getValue Value
+ * @method string getValue Value
  *
  * @author Yuri Nazarenko / rezident <m@rezident.org>
  */
-class Boolean extends AbstractType
+class StringPrimitive extends AbstractType
 {
 
 }

@@ -3,7 +3,7 @@
 namespace TelegramBot\methods;
 
 use TelegramBot\TelegramBot;
-use TelegramBot\types\Boolean;
+use TelegramBot\types\BooleanPrimitive;
 use TelegramBot\types\ChatPermissions;
 
 /**
@@ -14,7 +14,7 @@ use TelegramBot\types\ChatPermissions;
  * @method $this setPermissions(ChatPermissions $permissions) Required. New user permissions
  * @method $this setUntilDate(int $untilDate) Optional. Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever
  *
- * @method Boolean run(TelegramBot $bot)
+ * @method BooleanPrimitive run(TelegramBot $bot)
  *
  * @url https://core.telegram.org/bots/api#restrictchatmember
  *
@@ -22,5 +22,5 @@ use TelegramBot\types\ChatPermissions;
  */
 class RestrictChatMember extends AbstractMethod
 {
-    protected $resultClass = Boolean::class;
+    protected $resultClass = BooleanPrimitive::class;
 }
