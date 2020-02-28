@@ -36,6 +36,9 @@ abstract class AbstractMethod extends ConfigurableComponent
 
         $result = [];
         foreach ($this->resultIsArray ? $data['result'] : [$data['result']] as $resultItem) {
+            if (!is_array($resultItem)) {
+                $resultItem = ['value' => $resultItem];
+            }
             $result[] = call_user_func([$this->resultClass, 'create'], $resultItem);
         }
 
