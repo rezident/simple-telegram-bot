@@ -4,6 +4,7 @@ namespace TelegramBot\methods;
 
 use TelegramBot\TelegramBot;
 use TelegramBot\types\BooleanPrimitive;
+use TelegramBot\types\InlineQueryResult;
 
 /**
  * Use this method to send answers to an inline query. On success, True is returned. No more than 50 results per query are allowed.
