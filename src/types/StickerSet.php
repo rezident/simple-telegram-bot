@@ -11,6 +11,12 @@ namespace TelegramBot\types;
  * @method bool getContainsMasks True, if the sticker set contains masks
  * @method Sticker[] getStickers List of all set stickers
  *
+ * @method $this setName(string $name) Sticker set name
+ * @method $this setTitle(string $title) Sticker set title
+ * @method $this setIsAnimated(bool $isAnimated) True, if the sticker set contains animated stickers
+ * @method $this setContainsMasks(bool $containsMasks) True, if the sticker set contains masks
+ * @method $this setStickers(Sticker[] $stickers) List of all set stickers
+ *
  * @url https://core.telegram.org/bots/api#stickerset
  *
  * @author Yuri Nazarenko / rezident <m@rezident.org>

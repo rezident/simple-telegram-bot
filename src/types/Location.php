@@ -8,6 +8,9 @@ namespace TelegramBot\types;
  * @method float getLongitude Longitude as defined by sender
  * @method float getLatitude Latitude as defined by sender
  *
+ * @method $this setLongitude(float $longitude) Longitude as defined by sender
+ * @method $this setLatitude(float $latitude) Latitude as defined by sender
+ *
  * @url https://core.telegram.org/bots/api#location
  *
  * @author Yuri Nazarenko / rezident <m@rezident.org>

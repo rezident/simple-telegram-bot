@@ -9,6 +9,10 @@ namespace TelegramBot\types;
  * @method string getHash Base64-encoded data hash for data authentication
  * @method string getSecret Base64-encoded secret, encrypted with the bot's public RSA key, required for data decryption
  *
+ * @method $this setData(string $data) Base64-encoded encrypted JSON-serialized data with unique user's payload, data hashes and secrets required for EncryptedPassportElement decryption and authentication
+ * @method $this setHash(string $hash) Base64-encoded data hash for data authentication
+ * @method $this setSecret(string $secret) Base64-encoded secret, encrypted with the bot's public RSA key, required for data decryption
+ *
  * @url https://core.telegram.org/bots/api#encryptedcredentials
  *
  * @author Yuri Nazarenko / rezident <m@rezident.org>

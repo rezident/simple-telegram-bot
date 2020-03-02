@@ -11,6 +11,12 @@ namespace TelegramBot\types;
  * @method int getHeight Photo height
  * @method int getFileSize Optional. File size
  *
+ * @method $this setFileId(string $fileId) Identifier for this file, which can be used to download or reuse the file
+ * @method $this setFileUniqueId(string $fileUniqueId) Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+ * @method $this setWidth(int $width) Photo width
+ * @method $this setHeight(int $height) Photo height
+ * @method $this setFileSize(int $fileSize) Optional. File size
+ *
  * @url https://core.telegram.org/bots/api#photosize
  *
  * @author Yuri Nazarenko / rezident <m@rezident.org>

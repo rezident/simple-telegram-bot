@@ -10,6 +10,11 @@ namespace TelegramBot\types;
  * @method string getInvoicePayload Bot specified invoice payload
  * @method ShippingAddress getShippingAddress User specified shipping address
  *
+ * @method $this setId(string $id) Unique query identifier
+ * @method $this setFrom(User $from) User who sent the query
+ * @method $this setInvoicePayload(string $invoicePayload) Bot specified invoice payload
+ * @method $this setShippingAddress(ShippingAddress $shippingAddress) User specified shipping address
+ *
  * @url https://core.telegram.org/bots/api#shippingquery
  *
  * @author Yuri Nazarenko / rezident <m@rezident.org>

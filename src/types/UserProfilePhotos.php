@@ -7,6 +7,8 @@ namespace TelegramBot\types;
  *
  * @method int getTotalCount Total number of profile pictures the target user has
  *
+ * @method $this setTotalCount(int $totalCount) Total number of profile pictures the target user has
+ *
  * @url https://core.telegram.org/bots/api#userprofilephotos
  *
  * @author Yuri Nazarenko / rezident <m@rezident.org>
@@ -22,6 +24,18 @@ class UserProfilePhotos extends AbstractType
     function getPhotos()
     {
         return parent::getPhotos();
+    }
+
+    /**
+     * Requested profile pictures (in up to 4 sizes each)
+     *
+     * @param PhotoSize[][] $photos
+     *
+     * @return $this
+     */
+    function setPhotos($photos)
+    {
+        return parent::setPhotos($photos);
     }
 
 }

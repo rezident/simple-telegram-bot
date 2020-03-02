@@ -3,9 +3,8 @@
 
 $url = $argv[1] or die('URL is not specified' . PHP_EOL);
 $resultClass = $argv[2] ?? null;
-$typeIsParameter = !!@$argv[2];
+$typeIsParameter = true;
 
-var_dump($typeIsParameter);
 list($url, $anchor) = explode('#', $url);
 
 $html = file_get_contents($url);

@@ -9,6 +9,10 @@ namespace TelegramBot\types;
  * @method User getUser The user, who changed the answer to the poll
  * @method int[] getOptionIds 0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote.
  *
+ * @method $this setPollId(string $pollId) Unique poll identifier
+ * @method $this setUser(User $user) The user, who changed the answer to the poll
+ * @method $this setOptionIds(int[] $optionIds) 0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote.
+ *
  * @url https://core.telegram.org/bots/api#pollanswer
  *
  * @author Yuri Nazarenko / rezident <m@rezident.org>

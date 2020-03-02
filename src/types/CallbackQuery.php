@@ -13,6 +13,14 @@ namespace TelegramBot\types;
  * @method string getData Optional. Data associated with the callback button. Be aware that a bad client can send arbitrary data in this field.
  * @method string getGameShortName Optional. Short name of a Game to be returned, serves as the unique identifier for the game
  *
+ * @method $this setId(string $id) Unique identifier for this query
+ * @method $this setFrom(User $from) Sender
+ * @method $this setMessage(Message $message) Optional. Message with the callback button that originated the query. Note that message content and message date will not be available if the message is too old
+ * @method $this setInlineMessageId(string $inlineMessageId) Optional. Identifier of the message sent via the bot in inline mode, that originated the query.
+ * @method $this setChatInstance(string $chatInstance) Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in games.
+ * @method $this setData(string $data) Optional. Data associated with the callback button. Be aware that a bad client can send arbitrary data in this field.
+ * @method $this setGameShortName(string $gameShortName) Optional. Short name of a Game to be returned, serves as the unique identifier for the game
+ *
  * @url https://core.telegram.org/bots/api#callbackquery
  *
  * @author Yuri Nazarenko / rezident <m@rezident.org>

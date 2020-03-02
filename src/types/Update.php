@@ -18,6 +18,19 @@ namespace TelegramBot\types;
  * @method Poll getPoll Optional. New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot
  * @method PollAnswer getPollAnswer Optional. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.
  *
+ * @method $this setUpdateId(int $updateId) The update‘s unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you’re using Webhooks, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.
+ * @method $this setMessage(Message $message) Optional. New incoming message of any kind — text, photo, sticker, etc.
+ * @method $this setEditedMessage(Message $editedMessage) Optional. New version of a message that is known to the bot and was edited
+ * @method $this setChannelPost(Message $channelPost) Optional. New incoming channel post of any kind — text, photo, sticker, etc.
+ * @method $this setEditedChannelPost(Message $editedChannelPost) Optional. New version of a channel post that is known to the bot and was edited
+ * @method $this setInlineQuery(InlineQuery $inlineQuery) Optional. New incoming inline query
+ * @method $this setChosenInlineResult(ChosenInlineResult $chosenInlineResult) Optional. The result of an inline query that was chosen by a user and sent to their chat partner. Please see our documentation on the feedback collecting for details on how to enable these updates for your bot.
+ * @method $this setCallbackQuery(CallbackQuery $callbackQuery) Optional. New incoming callback query
+ * @method $this setShippingQuery(ShippingQuery $shippingQuery) Optional. New incoming shipping query. Only for invoices with flexible price
+ * @method $this setPreCheckoutQuery(PreCheckoutQuery $preCheckoutQuery) Optional. New incoming pre-checkout query. Contains full information about checkout
+ * @method $this setPoll(Poll $poll) Optional. New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot
+ * @method $this setPollAnswer(PollAnswer $pollAnswer) Optional. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.
+ *
  * @url https://core.telegram.org/bots/api#update
  *
  * @author Yuri Nazarenko / rezident <m@rezident.org>
