@@ -28,5 +28,8 @@ use TelegramBot\types\ReplyKeyboardRemove;
  */
 class SendMessage extends AbstractMethod
 {
+    const PARSE_MODE_MARKDOWN = 'Markdown';
+    const PARSE_MODE_HTML = 'HTML';
+
     protected $resultClass = Message::class;
 }

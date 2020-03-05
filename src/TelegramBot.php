@@ -3,19 +3,148 @@
 namespace TelegramBot;
 
 use TelegramBot\methods\AbstractMethod;
+use TelegramBot\methods\GetUpdates;
+use TelegramBot\methods\SendMessage;
+use TelegramBot\types\Update;
 
 /**
  * Class TelegramBot
  *
- * @method $this setToken(string $token)
- * @method string getToken
+ * @method $this setToken(string $token) Required. Bot's token
+ * @method $this setPrivateFor(int|string $privateFor) Optional. Bot will work only with specified user
+ * @method $this setPoolTimeout(int $poolTimeout) Optional. Timeout in seconds for long polling. Defaults to 10
+ * @method $this setCommandsNamespace(string $commandsNamespace) Optional. Namespace of available commands
+ * @method $this setCommandsPath(string $commandsPath) Optional. Path of available commands
+ *
+ * @method string getToken Required. Bot's token
+ * @method int|string getPrivateFor Optional. Bot will work only with specified user
+ * @method int getPoolTimeout Optional. Timeout in seconds for long polling. Defaults to 10
+ * @method string getCommandsNamespace Optional. Namespace of available commands
+ * @method string getCommandsPath Optional. Path of available commands
  *
  * @author Yuri Nazarenko / rezident <m@rezident.org>
  */
 class TelegramBot extends ConfigurableComponent
 {
-    public function execute(AbstractMethod $method)
-    {
+    const DEFAULT_POOL_TIMEOUT = 10;
 
+    const INTERNAL_COMMANDS_NAMESPACE = 'TelegramBot\\commands';
+
+    const INTERNAL_COMMANDS_PATH = __DIR__ . '/commands';
+
+    private $lastUpdateId = 0;
+
+    /**
+     * @var string[]
+     */
+    private $commandClasses = [];
+
+    /**
+     * @var Command
+     */
+    private $commandOfUsers = [];
+
+    public function run()
+    {
+        $this->fetchCommandClasses();
+        $this->fetchLastUpdateId();
+        $this->poolCycle();
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getCommandClasses(): array
+    {
+        return $this->commandClasses;
+    }
+
+    private function fetchLastUpdateId()
+    {
+        $firstUpdates = GetUpdates::create()->run($this);
+        if (count($firstUpdates)) {
+            $this->lastUpdateId = array_reverse($firstUpdates)[0]->getUpdateId() + 1;
+        }
+    }
+
+    private function poolCycle()
+    {
+        $timeout = $this->getPoolTimeout() ?? self::DEFAULT_POOL_TIMEOUT;
+        while (true) {
+            $updates = GetUpdates::create()->setTimeout($timeout)->setOffset($this->lastUpdateId)->run($this);
+            foreach ($updates as $update) {
+                $this->lastUpdateId = $update->getUpdateId() + 1;
+                if ($this->isSkip($update)) {
+                    continue;
+                }
+
+                $this->handleUpdate($update);
+            }
+        }
+    }
+
+    private function isSkip(Update $update): bool
+    {
+        $from = $update->getMessage()->getFrom();
+
+        switch (gettype($this->getPrivateFor())) {
+            case 'string':
+                return $this->getPrivateFor() !== $from->getUsername();
+            case 'integer':
+                return $this->getPrivateFor() !== $from->getId();
+            default:
+                return false;
+        }
+    }
+
+    private function handleUpdate(Update $update)
+    {
+        /** @var Command $command */
+        if ($this->isCommand($update)) {
+            $commandText = explode(' ', mb_strtolower($update->getMessage()->getText()))[0];
+            $commandClass = $this->commandClasses[$commandText] ?? $this->commandClasses['/help'];
+            $command = new $commandClass($this);
+            $this->commandOfUsers[$update->getMessage()->getChat()->getId()] = $command;
+            $result = $command->handleCommand($update->getMessage()->getText(), $update);
+        } else {
+            $command = $this->commandOfUsers[$update->getMessage()->getChat()->getId()];
+            $result = $command ? $command->handleNextCommand($update->getMessage()->getText(), $update) : null;
+        }
+
+        if (is_null($result)) {
+            return;
+        }
+
+        if ($result instanceof AbstractMethod) {
+            $method = $result;
+        } else {
+            $method = SendMessage::create()->setChatId($update->getMessage()->getChat()->getId());
+            $text = is_array($result[0]) ? implode(PHP_EOL, $result[0]) : $result[0];
+            $method->setText($text);
+            if (isset($result[1]) && $result[1]) {
+                $method->setParseMode(SendMessage::PARSE_MODE_MARKDOWN);
+            }
+        }
+
+        $method->run($this);
+    }
+
+    private function isCommand(Update $update): bool
+    {
+        return mb_substr($update->getMessage()->getText(), 0, 1) === '/';
+    }
+
+    private function fetchCommandClasses()
+    {
+        $namespaces = [self::INTERNAL_COMMANDS_NAMESPACE, $this->getCommandsNamespace()];
+        foreach ([self::INTERNAL_COMMANDS_PATH, $this->getCommandsPath()] as $path) {
+            if ($path) {
+                foreach (glob($path . '/*.php') as $index => $file) {
+                    $fileName = pathinfo($file, PATHINFO_FILENAME);
+                    $className = $namespaces[$index] . '\\' . $fileName;
+                    $this->commandClasses[call_user_func([$className, 'getCommandString'])] = $className;
+                }
+            }
+        }
     }
 }
