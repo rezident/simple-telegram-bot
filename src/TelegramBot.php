@@ -44,8 +44,9 @@ class TelegramBot extends ConfigurableComponent
      */
     private $commandOfUsers = [];
 
-    public function run()
+    public function run($startCommand = null)
     {
+        $this->execute($startCommand);
         $this->fetchCommandClasses();
         $this->fetchLastUpdateId();
         $this->poolCycle();
@@ -111,17 +112,41 @@ class TelegramBot extends ConfigurableComponent
             $result = $command ? $command->handleNextCommand($update->getMessage()->getText(), $update) : null;
         }
 
-        if (is_null($result)) {
+        $this->execute($result, $update->getMessage()->getChat()->getId());
+    }
+
+    /**
+     * Executes a command
+     *
+     * @param array|Command|null $command
+     * @param int|string|null    $chatId
+     *
+     * @throws exceptions\RequestExecutionError
+     * @throws exceptions\ResultClassIsNotSpecifiedException
+     *
+     * @author Yuri Nazarenko / rezident <m@rezident.org>
+     */
+    private function execute($command, $chatId = null)
+    {
+        if ($chatId === null) {
+            $chatId = $this->getPrivateFor();
+        }
+
+        if ($chatId === null) {
             return;
         }
 
-        if ($result instanceof AbstractMethod) {
-            $method = $result;
+        if ($command === null) {
+            return;
+        }
+
+        if ($command instanceof AbstractMethod) {
+            $method = $command;
         } else {
-            $method = SendMessage::create()->setChatId($update->getMessage()->getChat()->getId());
-            $text = is_array($result[0]) ? implode(PHP_EOL, $result[0]) : $result[0];
+            $method = SendMessage::create()->setChatId($chatId);
+            $text = is_array($command[0]) ? implode(PHP_EOL, $command[0]) : $command[0];
             $method->setText($text);
-            if (isset($result[1]) && $result[1]) {
+            if (isset($command[1]) && $command[1]) {
                 $method->setParseMode(SendMessage::PARSE_MODE_MARKDOWN);
             }
         }
