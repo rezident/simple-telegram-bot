@@ -145,6 +145,9 @@ class TelegramBot extends ConfigurableComponent
         } else {
             $method = SendMessage::create()->setChatId($chatId);
             $text = is_array($command[0]) ? implode(PHP_EOL, $command[0]) : $command[0];
+            if (!$text) {
+                return null;
+            }
             $method->setText($text);
             if (isset($command[1]) && $command[1]) {
                 $method->setParseMode(SendMessage::PARSE_MODE_MARKDOWN);
