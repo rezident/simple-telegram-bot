@@ -126,18 +126,18 @@ class TelegramBot extends ConfigurableComponent
      *
      * @author Yuri Nazarenko / rezident <m@rezident.org>
      */
-    private function execute($command, $chatId = null)
+    public function execute($command, $chatId = null)
     {
         if ($chatId === null) {
             $chatId = $this->getPrivateFor();
         }
 
         if ($chatId === null) {
-            return;
+            return null;
         }
 
         if ($command === null) {
-            return;
+            return null;
         }
 
         if ($command instanceof AbstractMethod) {
@@ -151,7 +151,7 @@ class TelegramBot extends ConfigurableComponent
             }
         }
 
-        $method->run($this);
+        return $method->run($this);
     }
 
     private function isCommand(Update $update): bool
@@ -162,9 +162,9 @@ class TelegramBot extends ConfigurableComponent
     private function fetchCommandClasses()
     {
         $namespaces = [self::INTERNAL_COMMANDS_NAMESPACE, $this->getCommandsNamespace()];
-        foreach ([self::INTERNAL_COMMANDS_PATH, $this->getCommandsPath()] as $path) {
+        foreach ([self::INTERNAL_COMMANDS_PATH, $this->getCommandsPath()] as $index => $path) {
             if ($path) {
-                foreach (glob($path . '/*.php') as $index => $file) {
+                foreach (glob($path . '/*.php') as $file) {
                     $fileName = pathinfo($file, PATHINFO_FILENAME);
                     $className = $namespaces[$index] . '\\' . $fileName;
                     $this->commandClasses[call_user_func([$className, 'getCommandString'])] = $className;

@@ -45,9 +45,10 @@ abstract class Command
     public function handleNextCommand(string $message, Update $update)
     {
         $this->update = $update;
-        if($this->nextMethod !== null) {
+        if ($this->nextMethod !== null) {
             $methodName = $this->nextMethod;
             $this->nextMethod = null;
+
             return call_user_func_array([$this, $methodName], [$message]);
         }
 
@@ -101,7 +102,22 @@ abstract class Command
         $reflectionClass = new ReflectionClass(get_called_class());
         $docComment = $reflectionClass->getDocComment();
         preg_match('/\s\*\s(.+)/', $docComment, $matches);
+
         return trim($matches[1]);
+    }
+
+    /**
+     * Returns a simple configured bot
+     *
+     * @return TelegramBot
+     *
+     * @author Yuri Nazarenko / rezident <m@rezident.org>
+     */
+    public function getSimpleBot(): TelegramBot
+    {
+        return TelegramBot::create()
+            ->setPrivateFor($this->update->getMessage()->getFrom()->getId())
+            ->setToken($this->bot->getToken());
     }
 
     /** @noinspection PhpUnused */
