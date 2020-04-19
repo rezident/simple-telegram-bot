@@ -36,13 +36,13 @@ abstract class Command
     }
 
     /**
-     * @param string $message
-     * @param Update $update
+     * @param string|null $message
+     * @param Update      $update
      *
      * @return mixed
      * @author Yuri Nazarenko / rezident <m@rezident.org>
      */
-    public function handleNextCommand(string $message, Update $update)
+    public function handleNextCommand($message, Update $update)
     {
         $this->update = $update;
         if ($this->nextMethod !== null) {
