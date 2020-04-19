@@ -59,6 +59,24 @@ abstract class BackgroundProcess extends ConfigurableComponent
     }
 
     /**
+     * Kills all of background processes
+     *
+     * @author Yuri Nazarenko / rezident <m@rezident.org>
+     */
+    public static function killAll()
+    {
+        foreach (explode(PHP_EOL, `ps`) as $processItem) {
+            $processItem = trim($processItem);
+            if (
+                preg_match('/^\d+/', $processItem, $matches) === 1
+                && mb_strpos($processItem, 'run-in-background.php') !== false) {
+                $cmd = "kill {$matches[0]}";
+                `$cmd`;
+            }
+        }
+    }
+
+    /**
      * Waits for N seconds
      *
      * @param int $seconds
