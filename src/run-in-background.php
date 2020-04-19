@@ -3,7 +3,12 @@
 
 use TelegramBot\BackgroundProcess;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+$path = __DIR__;
+while(!file_exists($path . '/vendor/autoload.php')) {
+    $path .= '/..';
+}
+
+require_once $path . '/vendor/autoload.php';
 
 date_default_timezone_set('Europe/Moscow');
 
