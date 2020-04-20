@@ -217,7 +217,7 @@ class Process
             $this->stdOut .= $data;
         }
 
-        while ($data = fread($this->pipes[1], 8192)) {
+        while ($data = fread($this->pipes[2], 8192)) {
             $this->stdErr .= $data;
         }
     }
