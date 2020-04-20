@@ -27,14 +27,14 @@ class Process
     private $pipes;
 
     /**
-     * @var string[]
+     * @var string
      */
-    private $stdOut = [];
+    private $stdOut = '';
 
     /**
-     * @var string[]
+     * @var string
      */
-    private $stdErr = [];
+    private $stdErr = '';
 
     /**
      * Exit code of process
@@ -148,11 +148,11 @@ class Process
      *
      * @author Yuri Nazarenko / rezident <m@rezident.org>
      */
-    public function getLastStdOut(): array
+    public function getLastStdOut(): string
     {
         $this->readPipes();
         $stdOut = $this->stdOut;
-        $this->stdOut = [];
+        $this->stdOut = '';
 
         return $stdOut;
     }
@@ -164,11 +164,11 @@ class Process
      *
      * @author Yuri Nazarenko / rezident <m@rezident.org>
      */
-    public function getLastStdErr(): array
+    public function getLastStdErr(): string
     {
         $this->readPipes();
         $stdErr = $this->stdErr;
-        $this->stdErr = [];
+        $this->stdErr = '';
 
         return $stdErr;
     }
@@ -180,7 +180,7 @@ class Process
      *
      * @author Yuri Nazarenko / rezident <m@rezident.org>
      */
-    public function getExitCode(): ?int
+    public function getExitCode()
     {
         return $this->exitCode;
     }
@@ -211,14 +211,14 @@ class Process
         return new static($runCommand);
     }
 
-    private function readPipes(): void
+    private function readPipes()
     {
-        while ($string = trim(fgets($this->pipes[1]))) {
-            $this->stdOut[] = $string;
+        while ($data = fread($this->pipes[1], 8192)) {
+            $this->stdOut .= $data;
         }
 
-        while ($string = trim(fgets($this->pipes[2]))) {
-            $this->stdErr[] = $string;
+        while ($data = fread($this->pipes[1], 8192)) {
+            $this->stdErr .= $data;
         }
     }
 
