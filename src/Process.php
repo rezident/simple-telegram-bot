@@ -213,12 +213,16 @@ class Process
 
     private function readPipes()
     {
-        while ($data = fread($this->pipes[1], 8192)) {
-            $this->stdOut .= $data;
+        if (isset($this->pipes[1])) {
+            while ($data = fread($this->pipes[1], 8192)) {
+                $this->stdOut .= $data;
+            }
         }
 
-        while ($data = fread($this->pipes[2], 8192)) {
-            $this->stdErr .= $data;
+        if (isset($this->pipes[2])) {
+            while ($data = fread($this->pipes[2], 8192)) {
+                $this->stdErr .= $data;
+            }
         }
     }
 
