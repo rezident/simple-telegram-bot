@@ -65,11 +65,12 @@ abstract class BackgroundProcess extends ConfigurableComponent
      */
     public static function killAll()
     {
-        foreach (explode(PHP_EOL, `ps`) as $processItem) {
+        $hash = md5(static::class);
+        foreach (explode(PHP_EOL, `ps ax`) as $processItem) {
             $processItem = trim($processItem);
             if (
                 preg_match('/^\d+/', $processItem, $matches) === 1
-                && mb_strpos($processItem, 'run-in-background.php') !== false) {
+                && mb_strpos($processItem, $hash) !== false) {
                 $cmd = "kill {$matches[0]}";
                 `$cmd`;
             }
