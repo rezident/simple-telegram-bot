@@ -106,7 +106,7 @@ class Process
         if ($sync) {
             $exitAt = $syncTimeout > 0 ? time() + $syncTimeout : null;
             while ($this->checkProcess()) {
-                if ($exitAt !== null && $exitAt >= time()) {
+                if ($exitAt !== null && $exitAt <= time()) {
                     $this->kill();
                     break;
                 }
@@ -146,6 +146,7 @@ class Process
         fclose($this->pipes[0]);
         fclose($this->pipes[1]);
         fclose($this->pipes[2]);
+        proc_terminate($this->resource);
         proc_close($this->resource);
         $this->resource = null;
         $this->pipes = null;
