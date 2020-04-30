@@ -61,11 +61,13 @@ abstract class BackgroundProcess extends ConfigurableComponent
     /**
      * Kills all of background processes
      *
+     * @param string|null $hash
+     *
      * @author Yuri Nazarenko / rezident <m@rezident.org>
      */
-    public static function killAll()
+    public static function killAll(string $hash = null)
     {
-        $hash = md5(static::class);
+        $hash = $hash ?? md5(static::class);
         foreach (explode(PHP_EOL, `ps ax`) as $processItem) {
             $processItem = trim($processItem);
             if (
