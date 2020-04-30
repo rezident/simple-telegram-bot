@@ -67,12 +67,13 @@ class Process
      * Runs the process
      *
      * @param bool $sync
+     * @param int  $syncTimeout Timeout on sync running
      *
      * @return $this
      *
      * @author Yuri Nazarenko / rezident <m@rezident.org>
      */
-    public function run(bool $sync = false): Process
+    public function run(bool $sync = false, int $syncTimeout = 0): Process
     {
         $cmd = [$this->runCommand];
         foreach ($this->parameters as $parameters) {
@@ -103,8 +104,12 @@ class Process
         stream_set_blocking($this->pipes[2], false);
 
         if ($sync) {
-            /** @noinspection PhpStatementHasEmptyBodyInspection */
+            $exitAt = $syncTimeout > 0 ? time() + $syncTimeout : null;
             while ($this->checkProcess()) {
+                if ($exitAt !== null && $exitAt >= time()) {
+                    $this->kill();
+                    break;
+                }
             }
         }
 
@@ -128,17 +133,22 @@ class Process
                 $this->exitCode = $status['exitcode'];
             }
 
-            fclose($this->pipes[0]);
-            fclose($this->pipes[1]);
-            fclose($this->pipes[2]);
-            proc_close($this->resource);
-            $this->resource = null;
-            $this->pipes = null;
+            $this->kill();
 
             return false;
         }
 
         return true;
+    }
+
+    private function kill()
+    {
+        fclose($this->pipes[0]);
+        fclose($this->pipes[1]);
+        fclose($this->pipes[2]);
+        proc_close($this->resource);
+        $this->resource = null;
+        $this->pipes = null;
     }
 
     /**
