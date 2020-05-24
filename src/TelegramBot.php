@@ -15,12 +15,14 @@ use TelegramBot\types\Update;
  * @method $this setPoolTimeout(int $poolTimeout) Optional. Timeout in seconds for long polling. Defaults to 10
  * @method $this setCommandsNamespace(string $commandsNamespace) Optional. Namespace of available commands
  * @method $this setCommandsPath(string $commandsPath) Optional. Path of available commands
+ * @method $this setProxy(string $proxy) Optional. Proxy Connection String
  *
  * @method string getToken Required. Bot's token
  * @method int|string getPrivateFor Optional. Bot will work only with specified user
  * @method int getPoolTimeout Optional. Timeout in seconds for long polling. Defaults to 10
  * @method string getCommandsNamespace Optional. Namespace of available commands
  * @method string getCommandsPath Optional. Path of available commands
+ * @method string getProxy Optional. Proxy Connection String
  *
  * @author Yuri Nazarenko / rezident <m@rezident.org>
  */

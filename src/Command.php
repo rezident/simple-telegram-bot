@@ -117,7 +117,8 @@ abstract class Command
     {
         return TelegramBot::create()
             ->setPrivateFor($this->update->getMessage()->getFrom()->getId())
-            ->setToken($this->bot->getToken());
+            ->setToken($this->bot->getToken())
+            ->setProxy($this->bot->getProxy());
     }
 
     /** @noinspection PhpUnused */
