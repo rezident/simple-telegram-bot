@@ -29,6 +29,7 @@ abstract class AbstractMethod extends ConfigurableComponent
         curl_setopt($curl, CURLOPT_POSTFIELDS, $this->toQuery());
         if ($bot->getProxy()) {
             curl_setopt($curl, CURLOPT_PROXY, $bot->getProxy());
+            curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
         }
         $result = curl_exec($curl);
         curl_close($curl);
