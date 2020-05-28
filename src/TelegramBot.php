@@ -2,6 +2,7 @@
 
 namespace TelegramBot;
 
+use TelegramBot\helpers\HttpHelper;
 use TelegramBot\methods\AbstractMethod;
 use TelegramBot\methods\GetUpdates;
 use TelegramBot\methods\SendMessage;
@@ -48,6 +49,7 @@ class TelegramBot extends ConfigurableComponent
 
     public function run($startCommand = null)
     {
+        HttpHelper::setProxy($this->getProxy());
         $this->execute($startCommand);
         $this->fetchCommandClasses();
         $this->fetchLastUpdateId();

@@ -5,6 +5,7 @@ namespace TelegramBot\methods;
 use TelegramBot\ConfigurableComponent;
 use TelegramBot\exceptions\RequestExecutionError;
 use TelegramBot\exceptions\ResultClassIsNotSpecifiedException;
+use TelegramBot\helpers\HttpHelper;
 use TelegramBot\TelegramBot;
 
 abstract class AbstractMethod extends ConfigurableComponent
@@ -23,16 +24,7 @@ abstract class AbstractMethod extends ConfigurableComponent
 
         $url = self::URL_PREFIX . $bot->getToken();
         $url .= '/' . $this->getMethodName();
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $this->toQuery());
-        if ($bot->getProxy()) {
-            curl_setopt($curl, CURLOPT_PROXY, $bot->getProxy());
-            curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        }
-        $result = curl_exec($curl);
-        curl_close($curl);
+        $result = HttpHelper::post($url, $this->toQuery());
         $data = @json_decode($result, true);
         if (!$data || !$data['ok']) {
             throw new RequestExecutionError(json_last_error_msg() . ': ' . $result);
