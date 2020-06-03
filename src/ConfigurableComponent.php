@@ -45,8 +45,14 @@ abstract class ConfigurableComponent
     protected function toQuery()
     {
         $result = [];
+        $getValueFunc = function ($value) {
+            return $value instanceof ConfigurableComponent ? $value->toQuery() : $value;
+        };
+
         foreach ($this->fields as $key => $value) {
-            $result[$key] = $value instanceof ConfigurableComponent ? $value->toQuery() : $value;
+            $result[$key] = is_array($value) && isset($value[0])
+                ? array_map($getValueFunc, $value)
+                : $getValueFunc($value);
         }
 
         return $result;
