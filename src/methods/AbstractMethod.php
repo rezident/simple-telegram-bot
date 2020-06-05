@@ -24,7 +24,7 @@ abstract class AbstractMethod extends ConfigurableComponent
 
         $url = self::URL_PREFIX . $bot->getToken();
         $url .= '/' . $this->getMethodName();
-        $result = HttpHelper::post($url, $this->toQuery());
+        $result = HttpHelper::post($url, $this);
         $data = @json_decode($result, true);
         if (!$data || !$data['ok']) {
             throw new RequestExecutionError(json_last_error_msg() . ': ' . $result);

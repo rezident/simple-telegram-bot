@@ -2,10 +2,11 @@
 
 namespace TelegramBot;
 
+use JsonSerializable;
 use TelegramBot\exceptions\MethodNotFountException;
 use TelegramBot\helpers\StringHelper;
 
-abstract class ConfigurableComponent
+abstract class ConfigurableComponent implements JsonSerializable
 {
     private $fields = [];
 
@@ -33,7 +34,7 @@ abstract class ConfigurableComponent
      * @return $this
      * @author Yuri Nazarenko / rezident <m@rezident.org>
      */
-    public static function create(?array $config = [])
+    public static function create(array $config = [])
     {
         if ($config === null) {
             return null;
@@ -42,17 +43,16 @@ abstract class ConfigurableComponent
         return new static($config);
     }
 
+    public function jsonSerialize()
+    {
+        return $this->fields;
+    }
+
     protected function toQuery()
     {
         $result = [];
-        $getValueFunc = function ($value) {
-            return $value instanceof ConfigurableComponent ? $value->toQuery() : $value;
-        };
-
         foreach ($this->fields as $key => $value) {
-            $result[$key] = is_array($value) && isset($value[0])
-                ? array_map($getValueFunc, $value)
-                : $getValueFunc($value);
+            $result[$key] = $value instanceof ConfigurableComponent ? $value->toQuery() : $value;
         }
 
         return $result;
@@ -71,5 +71,4 @@ abstract class ConfigurableComponent
 
         return $this;
     }
-
 }

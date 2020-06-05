@@ -15,8 +15,10 @@ class HttpHelper
     {
         $curl = self::getCurl($url);
         curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $postFields);
-
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($postFields, JSON_UNESCAPED_UNICODE));
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json'
+        ));
         $result = curl_exec($curl);
         curl_close($curl);
 
