@@ -79,6 +79,10 @@ class TelegramBot extends ConfigurableComponent
             $updates = GetUpdates::create()->setTimeout($timeout)->setOffset($this->lastUpdateId)->run($this);
             foreach ($updates as $update) {
                 $this->lastUpdateId = $update->getUpdateId() + 1;
+                if(empty($update->getMessage()) && $update->getCallbackQuery()) {
+                    $update->setMessage($update->getCallbackQuery()->getMessage());
+                    $update->getMessage()->setText($update->getCallbackQuery()->getData());
+                }
                 if ($this->isSkip($update)) {
                     continue;
                 }
@@ -90,13 +94,13 @@ class TelegramBot extends ConfigurableComponent
 
     private function isSkip(Update $update): bool
     {
-        $from = $update->getMessage()->getFrom();
+        $chat = $update->getMessage()->getChat();
 
         switch (gettype($this->getPrivateFor())) {
             case 'string':
-                return $this->getPrivateFor() !== $from->getUsername();
+                return $this->getPrivateFor() !== $chat->getUsername();
             case 'integer':
-                return $this->getPrivateFor() !== $from->getId();
+                return $this->getPrivateFor() !== $chat->getId();
             default:
                 return false;
         }
