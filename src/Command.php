@@ -50,6 +50,11 @@ abstract class Command
             $methodName = $this->nextMethod;
             $this->nextMethod = null;
 
+            $method = new ReflectionMethod($this, $methodName);
+            if ($method->getParameters()[0]->isArray()) {
+                $message = explode(',', $message);
+            }
+
             return call_user_func_array([$this, $methodName], [$message]);
         }
 
