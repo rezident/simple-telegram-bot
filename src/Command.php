@@ -97,7 +97,7 @@ abstract class Command
 
         $method = new ReflectionMethod($this, 'run');
         foreach ($method->getParameters() as $index => $parameter) {
-            if ($parameter->isArray()) {
+            if ($parameter->isArray() && isset($arguments[$index])) {
                 $arguments[$index] = array_filter(explode(',', $arguments[$index]), function ($item) {
                     return $item !== '';
                 });
