@@ -52,7 +52,9 @@ abstract class Command
 
             $method = new ReflectionMethod($this, $methodName);
             if ($method->getParameters()[0]->isArray()) {
-                $message = explode(',', $message);
+                $message = array_filter(explode(',', $message), function ($item) {
+                    return $item === '';
+                });
             }
 
             return call_user_func_array([$this, $methodName], [$message]);
@@ -96,7 +98,9 @@ abstract class Command
         $method = new ReflectionMethod($this, 'run');
         foreach ($method->getParameters() as $index => $parameter) {
             if ($parameter->isArray()) {
-                $arguments[$index] = explode(',', $arguments[$index]);
+                $arguments[$index] = array_filter(explode(',', $arguments[$index]), function ($item) {
+                    return $item === '';
+                });
             }
         }
 
