@@ -53,7 +53,7 @@ abstract class Command
             $method = new ReflectionMethod($this, $methodName);
             if ($method->getParameters()[0]->isArray()) {
                 $message = array_filter(explode(',', $message), function ($item) {
-                    return $item === '';
+                    return $item !== '';
                 });
             }
 
@@ -99,7 +99,7 @@ abstract class Command
         foreach ($method->getParameters() as $index => $parameter) {
             if ($parameter->isArray()) {
                 $arguments[$index] = array_filter(explode(',', $arguments[$index]), function ($item) {
-                    return $item === '';
+                    return $item !== '';
                 });
             }
         }
