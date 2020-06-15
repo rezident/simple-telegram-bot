@@ -4,6 +4,7 @@ namespace TelegramBot;
 
 use ReflectionClass;
 use ReflectionException;
+use ReflectionMethod;
 use TelegramBot\types\Update;
 
 /**
@@ -84,6 +85,13 @@ abstract class Command
                 array_push($arguments, array_pop($arguments) . ' ' . $commandPart);
             } else {
                 array_push($arguments, $commandPart);
+            }
+        }
+
+        $method = new ReflectionMethod($this, 'run');
+        foreach ($method->getParameters() as $index => $parameter) {
+            if ($parameter->isArray()) {
+                $arguments[$index] = explode(',', $arguments[$index]);
             }
         }
 
