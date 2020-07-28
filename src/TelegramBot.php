@@ -66,65 +66,6 @@ class TelegramBot extends ConfigurableComponent
         return $this->commandClasses;
     }
 
-    private function fetchLastUpdateId()
-    {
-        $firstUpdates = GetUpdates::create()->run($this);
-        if (count($firstUpdates)) {
-            $this->lastUpdateId = array_reverse($firstUpdates)[0]->getUpdateId() + 1;
-        }
-    }
-
-    private function poolCycle()
-    {
-        $timeout = $this->getPoolTimeout() ?? self::DEFAULT_POOL_TIMEOUT;
-        while (true) {
-            $updates = GetUpdates::create()->setTimeout($timeout)->setOffset($this->lastUpdateId)->run($this);
-            foreach ($updates as $update) {
-                $this->lastUpdateId = $update->getUpdateId() + 1;
-                if (empty($update->getMessage()) && $update->getCallbackQuery()) {
-                    $update->setMessage($update->getCallbackQuery()->getMessage());
-                    $update->getMessage()->setText($update->getCallbackQuery()->getData());
-                }
-                if ($this->isSkip($update)) {
-                    continue;
-                }
-
-                $this->handleUpdate($update);
-            }
-        }
-    }
-
-    private function isSkip(Update $update): bool
-    {
-        $chat = $update->getMessage()->getChat();
-
-        switch (gettype($this->getPrivateFor())) {
-            case 'string':
-                return $this->getPrivateFor() !== $chat->getUsername();
-            case 'integer':
-                return $this->getPrivateFor() !== $chat->getId();
-            default:
-                return false;
-        }
-    }
-
-    private function handleUpdate(Update $update)
-    {
-        /** @var Command $command */
-        if ($this->isCommand($update)) {
-            $commandText = explode(' ', mb_strtolower($update->getMessage()->getText()))[0];
-            $commandClass = $this->commandClasses[$commandText] ?? $this->commandClasses['/help'];
-            $command = new $commandClass($this);
-            $this->commandOfUsers[$update->getMessage()->getChat()->getId()] = $command;
-            $result = $command->handleCommand($update->getMessage()->getText(), $update);
-        } else {
-            $command = $this->commandOfUsers[$update->getMessage()->getChat()->getId()];
-            $result = $command ? $command->handleNextCommand($update->getMessage()->getText(), $update) : null;
-        }
-
-        $this->execute($result, $update->getMessage()->getChat()->getId());
-    }
-
     /**
      * Executes a command
      *
@@ -181,6 +122,65 @@ class TelegramBot extends ConfigurableComponent
         }
 
         return $method->run($this);
+    }
+
+    private function fetchLastUpdateId()
+    {
+        $firstUpdates = GetUpdates::create()->run($this);
+        if (count($firstUpdates)) {
+            $this->lastUpdateId = array_reverse($firstUpdates)[0]->getUpdateId() + 1;
+        }
+    }
+
+    private function poolCycle(): void
+    {
+        $timeout = $this->getPoolTimeout() ?? self::DEFAULT_POOL_TIMEOUT;
+        while (true) {
+            $updates = GetUpdates::create()->setTimeout($timeout)->setOffset($this->lastUpdateId)->run($this);
+            foreach ($updates as $update) {
+                $this->lastUpdateId = $update->getUpdateId() + 1;
+                $this->handleUpdate($update);
+            }
+        }
+    }
+
+    private function isSkip(Update $update): bool
+    {
+        $chat = $update->getMessage()->getChat();
+
+        switch (gettype($this->getPrivateFor())) {
+            case 'string':
+                return $this->getPrivateFor() !== $chat->getUsername();
+            case 'integer':
+                return $this->getPrivateFor() !== $chat->getId();
+            default:
+                return false;
+        }
+    }
+
+    private function handleUpdate(Update $update): void
+    {
+        if (empty($update->getMessage()) && $update->getCallbackQuery()) {
+            $update->setMessage($update->getCallbackQuery()->getMessage());
+            $update->getMessage()->setText($update->getCallbackQuery()->getData());
+        }
+        if ($this->isSkip($update)) {
+            return;
+        }
+
+        /** @var Command $command */
+        if ($this->isCommand($update)) {
+            $commandText = explode(' ', mb_strtolower($update->getMessage()->getText()))[0];
+            $commandClass = $this->commandClasses[$commandText] ?? $this->commandClasses['/help'];
+            $command = new $commandClass($this);
+            $this->commandOfUsers[$update->getMessage()->getChat()->getId()] = $command;
+            $result = $command->handleCommand($update->getMessage()->getText(), $update);
+        } else {
+            $command = $this->commandOfUsers[$update->getMessage()->getChat()->getId()];
+            $result = $command ? $command->handleNextCommand($update->getMessage()->getText(), $update) : null;
+        }
+
+        $this->execute($result, $update->getMessage()->getChat()->getId());
     }
 
     private function isCommand(Update $update): bool
