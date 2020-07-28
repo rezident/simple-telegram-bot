@@ -1,6 +1,7 @@
 {
     "name": "rezident/telegram-bot",
     "type": "framework",
+    "description": "This is a simple telegram bot framework",
     "license": "MIT",
     "authors": [
         {
