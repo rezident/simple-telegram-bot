@@ -2,6 +2,9 @@
 
 namespace TelegramBot;
 
+use Exception;
+use TelegramBot\components\CommandStateKeeperInterface;
+use TelegramBot\components\SimpleCommandStateKeeper;
 use TelegramBot\helpers\HttpHelper;
 use TelegramBot\methods\AbstractMethod;
 use TelegramBot\methods\GetUpdates;
@@ -17,6 +20,7 @@ use TelegramBot\types\Update;
  * @method $this setCommandsNamespace(string $commandsNamespace) Optional. Namespace of available commands
  * @method $this setCommandsPath(string $commandsPath) Optional. Path of available commands
  * @method $this setProxy(string $proxy) Optional. Proxy Connection String
+ * @method $this setCommandStateKeeper(CommandStateKeeperInterface $commandStateKeeper) Optional. Command state keeper
  *
  * @method string getToken Required. Bot's token
  * @method int|string getPrivateFor Optional. Bot will work only with specified user
@@ -24,6 +28,7 @@ use TelegramBot\types\Update;
  * @method string getCommandsNamespace Optional. Namespace of available commands
  * @method string getCommandsPath Optional. Path of available commands
  * @method string getProxy Optional. Proxy Connection String
+ * @method CommandStateKeeperInterface getCommandStateKeeper Optional. Command state keeper
  *
  * @author Yuri Nazarenko / rezident <m@rezident.org>
  */
@@ -45,17 +50,28 @@ class TelegramBot extends ConfigurableComponent
     private $commandClasses = [];
 
     /**
-     * @var Command
+     * @var CommandStateKeeperInterface
      */
-    private $commandOfUsers = [];
+    private $commandStateKeeper;
+
+    public function __construct(array $config = [])
+    {
+        $this->setCommandStateKeeper(new SimpleCommandStateKeeper());
+        parent::__construct($config);
+    }
 
     public function run($startCommand = null)
     {
-        HttpHelper::setProxy($this->getProxy());
+        $this->init();
         $this->execute($startCommand);
-        $this->fetchCommandClasses();
         $this->fetchLastUpdateId();
         $this->poolCycle();
+    }
+
+    public function handle(Update $update): void
+    {
+        $this->init();
+        $this->handleUpdate($update);
     }
 
     /**
@@ -70,7 +86,7 @@ class TelegramBot extends ConfigurableComponent
      * Executes a command
      *
      * @param array|Command|null $command
-     * @param int|string|null    $chatId
+     * @param int|string|null $chatId
      *
      * @throws exceptions\RequestExecutionError
      * @throws exceptions\ResultClassIsNotSpecifiedException
@@ -124,6 +140,12 @@ class TelegramBot extends ConfigurableComponent
         return $method->run($this);
     }
 
+    private function init(): void
+    {
+        HttpHelper::setProxy($this->getProxy());
+        $this->fetchCommandClasses();
+    }
+
     private function fetchLastUpdateId()
     {
         $firstUpdates = GetUpdates::create()->run($this);
@@ -139,7 +161,11 @@ class TelegramBot extends ConfigurableComponent
             $updates = GetUpdates::create()->setTimeout($timeout)->setOffset($this->lastUpdateId)->run($this);
             foreach ($updates as $update) {
                 $this->lastUpdateId = $update->getUpdateId() + 1;
-                $this->handleUpdate($update);
+                try {
+                    $this->handleUpdate($update);
+                } catch (Exception $exception) {
+
+                }
             }
         }
     }
@@ -169,18 +195,19 @@ class TelegramBot extends ConfigurableComponent
         }
 
         /** @var Command $command */
+        $chatId = $update->getMessage()->getChat()->getId();
         if ($this->isCommand($update)) {
             $commandText = explode(' ', mb_strtolower($update->getMessage()->getText()))[0];
             $commandClass = $this->commandClasses[$commandText] ?? $this->commandClasses['/help'];
             $command = new $commandClass($this);
-            $this->commandOfUsers[$update->getMessage()->getChat()->getId()] = $command;
+            $this->getCommandStateKeeper()->set($chatId, $command);
             $result = $command->handleCommand($update->getMessage()->getText(), $update);
         } else {
-            $command = $this->commandOfUsers[$update->getMessage()->getChat()->getId()];
+            $command = $this->getCommandStateKeeper()->get($chatId);
             $result = $command ? $command->handleNextCommand($update->getMessage()->getText(), $update) : null;
         }
 
-        $this->execute($result, $update->getMessage()->getChat()->getId());
+        $this->execute($result, $chatId);
     }
 
     private function isCommand(Update $update): bool

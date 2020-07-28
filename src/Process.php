@@ -155,7 +155,7 @@ class Process
     /**
      * Returns last stdout data of process
      *
-     * @return string[]
+     * @return string
      *
      * @author Yuri Nazarenko / rezident <m@rezident.org>
      */
@@ -171,7 +171,7 @@ class Process
     /**
      * Returns last stderr data of process
      *
-     * @return string[]
+     * @return string
      *
      * @author Yuri Nazarenko / rezident <m@rezident.org>
      */
