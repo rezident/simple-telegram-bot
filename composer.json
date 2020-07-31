@@ -1,7 +1,7 @@
 {
     "name": "rezident/telegram-bot",
     "type": "framework",
-    "description": "This is a simple telegram bot framework",
+    "description": "This is a simple telegram bot framework. It Supports Bot API v4.9",
     "license": "MIT",
     "authors": [
         {

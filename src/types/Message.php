@@ -16,34 +16,36 @@ namespace TelegramBot\types;
  * @method string getForwardSenderName Optional. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages
  * @method int getForwardDate Optional. For forwarded messages, date the original message was sent in Unix time
  * @method Message getReplyToMessage Optional. For replies, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.
+ * @method User getViaBot Optional. Bot through which the message was sent
  * @method int getEditDate Optional. Date the message was last edited in Unix time
  * @method string getMediaGroupId Optional. The unique identifier of a media message group this message belongs to
  * @method string getAuthorSignature Optional. Signature of the post author for messages in channels
  * @method string getText Optional. For text messages, the actual UTF-8 text of the message, 0-4096 characters
  * @method MessageEntity[] getEntities Optional. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text
- * @method MessageEntity[] getCaptionEntities Optional. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption
+ * @method Animation getAnimation Optional. Message is an animation, information about the animation. For backward compatibility, when this field is set, the document field will also be set
  * @method Audio getAudio Optional. Message is an audio file, information about the file
  * @method Document getDocument Optional. Message is a general file, information about the file
- * @method Animation getAnimation Optional. Message is an animation, information about the animation. For backward compatibility, when this field is set, the document field will also be set
- * @method Game getGame Optional. Message is a game, information about the game. More about games »
  * @method PhotoSize[] getPhoto Optional. Message is a photo, available sizes of the photo
  * @method Sticker getSticker Optional. Message is a sticker, information about the sticker
  * @method Video getVideo Optional. Message is a video, information about the video
- * @method Voice getVoice Optional. Message is a voice message, information about the file
  * @method VideoNote getVideoNote Optional. Message is a video note, information about the video message
+ * @method Voice getVoice Optional. Message is a voice message, information about the file
  * @method string getCaption Optional. Caption for the animation, audio, document, photo, video or voice, 0-1024 characters
+ * @method MessageEntity[] getCaptionEntities Optional. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption
  * @method Contact getContact Optional. Message is a shared contact, information about the contact
- * @method Location getLocation Optional. Message is a shared location, information about the location
- * @method Venue getVenue Optional. Message is a venue, information about the venue
+ * @method Dice getDice Optional. Message is a dice with random value from 1 to 6
+ * @method Game getGame Optional. Message is a game, information about the game. More about games »
  * @method Poll getPoll Optional. Message is a native poll, information about the poll
+ * @method Venue getVenue Optional. Message is a venue, information about the venue. For backward compatibility, when this field is set, the location field will also be set
+ * @method Location getLocation Optional. Message is a shared location, information about the location
  * @method User[] getNewChatMembers Optional. New members that were added to the group or supergroup and information about them (the bot itself may be one of these members)
  * @method User getLeftChatMember Optional. A member was removed from the group, information about them (this member may be the bot itself)
  * @method string getNewChatTitle Optional. A chat title was changed to this value
  * @method PhotoSize[] getNewChatPhoto Optional. A chat photo was change to this value
  * @method bool getDeleteChatPhoto Optional. Service message: the chat photo was deleted
  * @method bool getGroupChatCreated Optional. Service message: the group has been created
- * @method bool getSupergroupChatCreated Optional. Service message: the supergroup has been created. This field can‘t be received in a message coming through updates, because bot can’t be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup.
- * @method bool getChannelChatCreated Optional. Service message: the channel has been created. This field can‘t be received in a message coming through updates, because bot can’t be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel.
+ * @method bool getSupergroupChatCreated Optional. Service message: the supergroup has been created. This field can't be received in a message coming through updates, because bot can't be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup.
+ * @method bool getChannelChatCreated Optional. Service message: the channel has been created. This field can't be received in a message coming through updates, because bot can't be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel.
  * @method int getMigrateToChatId Optional. The group has been migrated to a supergroup with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
  * @method int getMigrateFromChatId Optional. The supergroup has been migrated from a group with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
  * @method Message getPinnedMessage Optional. Specified message was pinned. Note that the Message object in this field will not contain further reply_to_message fields even if it is itself a reply.
@@ -64,34 +66,36 @@ namespace TelegramBot\types;
  * @method $this setForwardSenderName(string $forwardSenderName) Optional. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages
  * @method $this setForwardDate(int $forwardDate) Optional. For forwarded messages, date the original message was sent in Unix time
  * @method $this setReplyToMessage(Message $replyToMessage) Optional. For replies, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.
+ * @method $this setViaBot(User $viaBot) Optional. Bot through which the message was sent
  * @method $this setEditDate(int $editDate) Optional. Date the message was last edited in Unix time
  * @method $this setMediaGroupId(string $mediaGroupId) Optional. The unique identifier of a media message group this message belongs to
  * @method $this setAuthorSignature(string $authorSignature) Optional. Signature of the post author for messages in channels
  * @method $this setText(string $text) Optional. For text messages, the actual UTF-8 text of the message, 0-4096 characters
  * @method $this setEntities(MessageEntity[] $entities) Optional. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text
- * @method $this setCaptionEntities(MessageEntity[] $captionEntities) Optional. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption
+ * @method $this setAnimation(Animation $animation) Optional. Message is an animation, information about the animation. For backward compatibility, when this field is set, the document field will also be set
  * @method $this setAudio(Audio $audio) Optional. Message is an audio file, information about the file
  * @method $this setDocument(Document $document) Optional. Message is a general file, information about the file
- * @method $this setAnimation(Animation $animation) Optional. Message is an animation, information about the animation. For backward compatibility, when this field is set, the document field will also be set
- * @method $this setGame(Game $game) Optional. Message is a game, information about the game. More about games »
  * @method $this setPhoto(PhotoSize[] $photo) Optional. Message is a photo, available sizes of the photo
  * @method $this setSticker(Sticker $sticker) Optional. Message is a sticker, information about the sticker
  * @method $this setVideo(Video $video) Optional. Message is a video, information about the video
- * @method $this setVoice(Voice $voice) Optional. Message is a voice message, information about the file
  * @method $this setVideoNote(VideoNote $videoNote) Optional. Message is a video note, information about the video message
+ * @method $this setVoice(Voice $voice) Optional. Message is a voice message, information about the file
  * @method $this setCaption(string $caption) Optional. Caption for the animation, audio, document, photo, video or voice, 0-1024 characters
+ * @method $this setCaptionEntities(MessageEntity[] $captionEntities) Optional. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption
  * @method $this setContact(Contact $contact) Optional. Message is a shared contact, information about the contact
- * @method $this setLocation(Location $location) Optional. Message is a shared location, information about the location
- * @method $this setVenue(Venue $venue) Optional. Message is a venue, information about the venue
+ * @method $this setDice(Dice $dice) Optional. Message is a dice with random value from 1 to 6
+ * @method $this setGame(Game $game) Optional. Message is a game, information about the game. More about games »
  * @method $this setPoll(Poll $poll) Optional. Message is a native poll, information about the poll
+ * @method $this setVenue(Venue $venue) Optional. Message is a venue, information about the venue. For backward compatibility, when this field is set, the location field will also be set
+ * @method $this setLocation(Location $location) Optional. Message is a shared location, information about the location
  * @method $this setNewChatMembers(User[] $newChatMembers) Optional. New members that were added to the group or supergroup and information about them (the bot itself may be one of these members)
  * @method $this setLeftChatMember(User $leftChatMember) Optional. A member was removed from the group, information about them (this member may be the bot itself)
  * @method $this setNewChatTitle(string $newChatTitle) Optional. A chat title was changed to this value
  * @method $this setNewChatPhoto(PhotoSize[] $newChatPhoto) Optional. A chat photo was change to this value
  * @method $this setDeleteChatPhoto(bool $deleteChatPhoto) Optional. Service message: the chat photo was deleted
  * @method $this setGroupChatCreated(bool $groupChatCreated) Optional. Service message: the group has been created
- * @method $this setSupergroupChatCreated(bool $supergroupChatCreated) Optional. Service message: the supergroup has been created. This field can‘t be received in a message coming through updates, because bot can’t be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup.
- * @method $this setChannelChatCreated(bool $channelChatCreated) Optional. Service message: the channel has been created. This field can‘t be received in a message coming through updates, because bot can’t be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel.
+ * @method $this setSupergroupChatCreated(bool $supergroupChatCreated) Optional. Service message: the supergroup has been created. This field can't be received in a message coming through updates, because bot can't be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup.
+ * @method $this setChannelChatCreated(bool $channelChatCreated) Optional. Service message: the channel has been created. This field can't be received in a message coming through updates, because bot can't be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel.
  * @method $this setMigrateToChatId(int $migrateToChatId) Optional. The group has been migrated to a supergroup with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
  * @method $this setMigrateFromChatId(int $migrateFromChatId) Optional. The supergroup has been migrated from a group with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
  * @method $this setPinnedMessage(Message $pinnedMessage) Optional. Specified message was pinned. Note that the Message object in this field will not contain further reply_to_message fields even if it is itself a reply.
