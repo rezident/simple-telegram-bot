@@ -9,6 +9,7 @@ while(!file_exists($path . '/vendor/autoload.php')) {
     $path .= '/..';
 }
 
+/** @noinspection PhpIncludeInspection */
 require_once $path . '/vendor/autoload.php';
 
 date_default_timezone_set('Europe/Moscow');
