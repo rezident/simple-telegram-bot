@@ -3,7 +3,7 @@
     "type": "framework",
     "description": "This is a simple telegram bot framework. It Supports Bot API v4.9",
     "license": "MIT",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "authors": [
         {
             "name": "Yuri Nazarenko",
