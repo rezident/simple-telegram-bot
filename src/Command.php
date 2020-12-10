@@ -51,7 +51,7 @@ abstract class Command
             $this->nextMethod = null;
 
             $method = new ReflectionMethod($this, $methodName);
-            if ($method->getParameters()[0]->isArray()) {
+            if (count($method->getParameters()) && $method->getParameters()[0]->isArray()) {
                 $message = array_filter(explode(',', $message), function ($item) {
                     return $item !== '';
                 });
