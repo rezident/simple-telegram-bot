@@ -49,11 +49,6 @@ class TelegramBot extends ConfigurableComponent
      */
     private $commandClasses = [];
 
-    /**
-     * @var CommandStateKeeperInterface
-     */
-    private $commandStateKeeper;
-
     public function __construct(array $config = [])
     {
         $this->setCommandStateKeeper(new SimpleCommandStateKeeper());
@@ -86,7 +81,9 @@ class TelegramBot extends ConfigurableComponent
      * Executes a command
      *
      * @param array|Command|null $command
-     * @param int|string|null $chatId
+     * @param int|string|null    $chatId
+     *
+     * @return mixed
      *
      * @throws exceptions\RequestExecutionError
      * @throws exceptions\ResultClassIsNotSpecifiedException
@@ -196,12 +193,12 @@ class TelegramBot extends ConfigurableComponent
 
         /** @var Command $command */
         $chatId = $update->getMessage()->getChat()->getId();
-        if ($this->isCommand($update)) {
-            $commandText = explode(' ', mb_strtolower($update->getMessage()->getText()))[0];
+        if ($commandText = $this->getCommand($update)) {
             $commandClass = $this->commandClasses[$commandText] ?? $this->commandClasses['/help'];
             $command = new $commandClass($this);
             $this->getCommandStateKeeper()->set($chatId, $command);
-            $result = $command->handleCommand($update->getMessage()->getText(), $update);
+            $arguments = $this->extractArguments($commandText, $update->getMessage()->getText());
+            $result = $command->handleCommand($arguments, $update);
         } else {
             $command = $this->getCommandStateKeeper()->get($chatId);
             $result = $command ? $command->handleNextCommand($update->getMessage()->getText(), $update) : null;
@@ -210,9 +207,23 @@ class TelegramBot extends ConfigurableComponent
         $this->execute($result, $chatId);
     }
 
-    private function isCommand(Update $update): bool
+    private function extractArguments(string $commandText, string $updateText): string
     {
-        return mb_substr($update->getMessage()->getText(), 0, 1) === '/';
+        $regexp = sprintf('/^%s/u', str_replace('/', '\/', $commandText));
+        return trim(preg_replace($regexp, '', $updateText));
+    }
+
+    private function getCommand(Update $update): ?string
+    {
+        $text = sprintf('%s ', $update->getMessage()->getText());
+        foreach (array_keys($this->commandClasses) as $command) {
+            $commandWithSpace = sprintf('%s ', $command);
+            if (mb_substr($text, 0, mb_strlen($commandWithSpace)) === $commandWithSpace) {
+                return $command;
+            }
+        }
+
+        return mb_substr($text, 0, 1) === '/' ? explode(' ', $text)[0] : null;
     }
 
     private function fetchCommandClasses()
@@ -224,6 +235,10 @@ class TelegramBot extends ConfigurableComponent
                     $fileName = pathinfo($file, PATHINFO_FILENAME);
                     $className = $namespaces[$index] . '\\' . $fileName;
                     $this->commandClasses[call_user_func([$className, 'getCommandString'])] = $className;
+                    $alias = call_user_func([$className, 'getAlias']);
+                    if ($alias) {
+                        $this->commandClasses[$alias] = $className;
+                    }
                 }
             }
         }

@@ -29,6 +29,11 @@ abstract class Command
     /**
      * @var string
      */
+    protected static $alias;
+
+    /**
+     * @var string
+     */
     private $nextMethod;
 
     public function __construct(TelegramBot $bot)
@@ -64,34 +69,33 @@ abstract class Command
     }
 
     /**
-     * @param string $commandText
+     * @param string $argumentsCommandPart
      * @param Update $update
      *
      * @return mixed
      * @author Yuri Nazarenko / rezident <m@rezident.org>
      */
-    public function handleCommand(string $commandText, Update $update)
+    public function handleCommand(string $argumentsCommandPart, Update $update)
     {
         $this->update = $update;
         $arguments = [];
-        $commandParts = explode(' ', $commandText);
-        array_shift($commandParts);
+        $argumentsParts = explode(' ', $argumentsCommandPart);
         $quoteIsOpen = false;
-        while ($commandPart = array_shift($commandParts)) {
-            $firstSymbol = mb_substr($commandPart, 0, 1);
-            $lastSymbol = mb_substr($commandPart, -1);
+        while ($argumentPart = array_shift($argumentsParts)) {
+            $firstSymbol = mb_substr($argumentPart, 0, 1);
+            $lastSymbol = mb_substr($argumentPart, -1);
             if (($firstSymbol === '"' || $firstSymbol === '«') && $quoteIsOpen === false) {
                 $quoteIsOpen = true;
-                $commandPart = ltrim($commandPart, '"«');
-                array_push($arguments, $commandPart);
+                $argumentPart = ltrim($argumentPart, '"«');
+                array_push($arguments, $argumentPart);
             } elseif ($quoteIsOpen === true) {
                 if ($lastSymbol === '"' || $lastSymbol === '»') {
                     $quoteIsOpen = false;
-                    $commandPart = rtrim($commandPart, '"»');
+                    $argumentPart = rtrim($argumentPart, '"»');
                 }
-                array_push($arguments, array_pop($arguments) . ' ' . $commandPart);
+                array_push($arguments, array_pop($arguments) . ' ' . $argumentPart);
             } else {
-                array_push($arguments, $commandPart);
+                array_push($arguments, $argumentPart);
             }
         }
 
@@ -150,6 +154,12 @@ abstract class Command
         );
 
         return '/' . trim(mb_strtolower($command), '_');
+    }
+
+    /** @noinspection PhpUnused */
+    public static function getAlias(): ?string
+    {
+        return static::$alias;
     }
 
     /**
