@@ -155,14 +155,13 @@ class TelegramBot extends ConfigurableComponent
     {
         $timeout = $this->getPoolTimeout() ?? self::DEFAULT_POOL_TIMEOUT;
         while (true) {
-            $updates = GetUpdates::create()->setTimeout($timeout)->setOffset($this->lastUpdateId)->run($this);
-            foreach ($updates as $update) {
-                $this->lastUpdateId = $update->getUpdateId() + 1;
-                try {
+            try {
+                $updates = GetUpdates::create()->setTimeout($timeout)->setOffset($this->lastUpdateId)->run($this);
+                foreach ($updates as $update) {
+                    $this->lastUpdateId = $update->getUpdateId() + 1;
                     $this->handleUpdate($update);
-                } catch (Exception $exception) {
-
                 }
+            } catch (Exception $exception) {
             }
         }
     }
@@ -210,6 +209,7 @@ class TelegramBot extends ConfigurableComponent
     private function extractArguments(string $commandText, string $updateText): string
     {
         $regexp = sprintf('/^%s/u', str_replace('/', '\/', $commandText));
+
         return trim(preg_replace($regexp, '', $updateText));
     }
 
